@@ -2,7 +2,7 @@
 #
 # * Installs ntp daemon, optionally using the closest server as specified
 class ntp::openntpd (
-  server_region = false
+  $server_region = false
 ) {
   package { 'openntpd' :
     ensure => present,
