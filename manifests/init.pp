@@ -6,7 +6,7 @@ class ntp (
 ) {
   if ! $::ec2_instance_id {
     case $::lsbdistid {
-      /(Ubuntu|ubuntu|Debian|debian)/   : { 
+      /(Ubuntu|ubuntu|Debian|debian)/   : {
         class { 'ntp::openntpd':
           server_region => $server_region
         }
