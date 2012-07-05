@@ -5,13 +5,18 @@ class ntp (
   $server_region = false
 ) {
   if ! $::ec2_instance_id {
-    case $::lsbdistid {
-      /(Ubuntu|ubuntu|Debian|debian)/   : {
+    case $::osfamily {
+      /(?i-mx:debian)/: {
         class { 'ntp::openntpd':
-          server_region => $server_region
+          server_region => $ntp::server_region
         }
       }
-      /(centos|RedHatEnterpriseServer)/ : { include ntp::standard }
+      /(?i-mx:redhat)/: {
+        include ntp::standard
+      }
+      default: {
+        fail( 'Unsupported operating system' )
+      }
     }
   }
   else {
