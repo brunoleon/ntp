@@ -12,7 +12,7 @@
 # use a random selection of 4 public stratum 2 servers
 # see http://twiki.ntp.org/bin/view/Servers/NTPPoolServers
 # and http://www.pool.ntp.org/
-<% if server_region then %>
+<% if @server_region != '' then %>
 server 0.<%= server_region %>.pool.ntp.org
 server 1.<%= server_region %>.pool.ntp.org
 server 2.<%= server_region %>.pool.ntp.org
