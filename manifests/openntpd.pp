@@ -29,12 +29,19 @@ class ntp::openntpd (
     $pattern   = undef
   }
 
+  if $::productname == 'KVM' {
+    $service_ensure = 'stopped'
+    $service_enable = false
+  } else {
+    $service_ensure = 'running'
+    $service_enable = true
+  }
+
   service { 'openntpd':
-    ensure      => running,
-    enable      => true,
+    ensure      => $service_ensure,
+    enable      => $service_enable,
     hasstatus   => $hasstatus,
-    require     => Package[openntpd],
     pattern     => $pattern,
+    require     => Package[ 'openntpd' ],
   }
 }
-
