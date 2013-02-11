@@ -2,36 +2,24 @@
 #
 # * Setup proper time management
 class ntp (
-  $server_region  = '',
-  $ntpdate_server = '91.189.94.4',
-) {
+  $server_region    = '',
+  $force_on_virtual = false,
+  $defaults_options = $ntp::variables::default_options,
+) inherits ntp::variables {
 
-  validate_string( $server_region )
+  validate_bool( $force_on_virtual )
+  validate_string( $server_region, $defaults_options )
 
-  if ! $::ec2_instance_id {
-    case $::osfamily {
-      /(?i-mx:debian)/: {
-        class { 'ntp::openntpd':
-          server_region => $ntp::server_region
-        }
-        if ! is_ip_address( $ntpdate_server ) {
-          fail( 'You should provide an IP and not a hostname here. NTPDATE fails DNS resolution at boot time.')
-        }
-        file { '/etc/default/ntpdate':
-          ensure  => file,
-          content => template( 'ntp/default_ntpdate.erb' ),
-        }
-      }
-      /(?i-mx:redhat)/: {
-        include ntp::standard
-      }
-      default: {
-        fail( 'Unsupported operating system' )
-      }
-    }
+  if ( $::is_virtual == 'true' ) and ( ! $force_on_virtual ) {
+    # Using NTP on a VM is usually not a good idea
+    fail( 'You need to set $force_on_virtual = true to apply this module to a VM' )
   }
-  else {
-    include ntp::ec2
-  }
+
+  Class[ "${module_name}::install" ] ->
+  Class[ "${module_name}::config" ] ~>
+  Class[ "${module_name}::service" ]
+
+  include "${module_name}::install"
+  include "${module_name}::config"
+  include "${module_name}::service"
 }
-

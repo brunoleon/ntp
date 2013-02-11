@@ -12,11 +12,11 @@
 # use a random selection of 4 public stratum 2 servers
 # see http://twiki.ntp.org/bin/view/Servers/NTPPoolServers
 # and http://www.pool.ntp.org/
-<% if @server_region != '' then %>
-server 0.<%= server_region %>.pool.ntp.org
-server 1.<%= server_region %>.pool.ntp.org
-server 2.<%= server_region %>.pool.ntp.org
-server 3.<%= server_region %>.pool.ntp.org
+<% if scope.lookupvar('ntp::server_region') != '' then %>
+server 0.<%= scope.lookupvar('ntp::server_region') %>.pool.ntp.org
+server 1.<%= scope.lookupvar('ntp::server_region') %>.pool.ntp.org
+server 2.<%= scope.lookupvar('ntp::server_region') %>.pool.ntp.org
+server 3.<%= scope.lookupvar('ntp::server_region') %>.pool.ntp.org
 <% else %>
 server 0.pool.ntp.org
 server 1.pool.ntp.org
